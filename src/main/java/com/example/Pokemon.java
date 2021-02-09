@@ -23,15 +23,9 @@ public class Pokemon {
     return pokemonName;
   }
 
-  public String getTypes() {
-    StringBuilder returnedPokemonTypes = new StringBuilder();
-    returnedPokemonTypes.append("Types: ");
-    for (String pokeType : specificStats.pokemonTypes) {
-      returnedPokemonTypes.append(pokeType);
-      returnedPokemonTypes.append(", ");
-    }
+  public ArrayList<String> getTypes() {
 
-    return returnedPokemonTypes.substring(0, returnedPokemonTypes.length() - 2);
+    return specificStats.pokemonTypes;
   }
 
   public ArrayList<String> getPossibleMoves() {
