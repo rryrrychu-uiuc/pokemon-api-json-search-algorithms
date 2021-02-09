@@ -58,7 +58,7 @@ public class Pokedex {
     return listOfPokemon.size();
   }
 
-  public static ArrayList<String> getALlPokemonNames(Pokedex targetPokedex) {
+  public static ArrayList<String> getPokemonNames(Pokedex targetPokedex) {
 
     checkIfPokedexIsNull(targetPokedex);
 
@@ -154,7 +154,7 @@ public class Pokedex {
     return pkmnWithSpecificMove;
   }
 
-  public static Pokedex filterPokemonByMinimumumHeightAndWeight(
+  public static Pokedex filterPokemonByMinHeightAndWeight(
       Pokedex targetPokedex, int minHeight, int minWeight) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -173,13 +173,17 @@ public class Pokedex {
     return validPkmn;
   }
 
-  public static ArrayList<String> filterMovesWithKeywordFromPokemon(
+  public static ArrayList<String> filterPokemonMovesWithKeyword(
       Pokedex targetPokedex, String pokemonName, String keyword) {
 
     Pokemon targetPokemon = findPokemonByName(targetPokedex, pokemonName);
 
     if (targetPokemon == null) {
       throw new NoSuchElementException("Pokemon does not exist in the pokedex");
+    }
+
+    if (keyword == null || keyword.length() == 0) {
+      throw new IllegalArgumentException("Keyword cannot be null or empty");
     }
 
     keyword = keyword.toLowerCase();
@@ -246,7 +250,7 @@ public class Pokedex {
 
   private static void checkValidPokemonType(String pokemonType) {
     if (!pokemonTypes.contains(pokemonType)) {
-      throw new IllegalArgumentException("Passed pokemon type does not exist");
+      throw new NoSuchElementException("Passed pokemon type does not exist");
     }
   }
 }
