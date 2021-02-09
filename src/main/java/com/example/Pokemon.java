@@ -44,6 +44,14 @@ public class Pokemon {
     return specificStats.pokemonBaseStats;
   }
 
+  public int getHeight() {
+    return specificStats.height;
+  }
+
+  public int getWeight() {
+    return specificStats.weight;
+  }
+
   private PokemonStats deserializePokemonStats(String pkmnStatsURL) {
 
     PokemonStats newStatsToReturn = new PokemonStats();

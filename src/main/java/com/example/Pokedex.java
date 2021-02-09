@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class Pokedex {
 
@@ -34,17 +35,20 @@ public class Pokedex {
     }
   }
 
+  //Filtering Methods Begin Here
+
   public static ArrayList<Pokemon> filterPokemonWithSpecificType(
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
-    ArrayList<Pokemon> pkmnWithSpecficType = new ArrayList<>();
 
-    for (Pokemon pkmnToFind : targetPokedex.listOfPokemon) {
-      if (pkmnToFind.getTypes().contains(pokemonType)) {
+    ArrayList<Pokemon> pkmnWithSpecficType = new ArrayList<>();
+    for (Pokemon toExamine : targetPokedex.listOfPokemon) {
+
+      if (toExamine.getTypes().contains(pokemonType)) {
         if (!isPureTypeSearch) {
-          pkmnWithSpecficType.add(pkmnToFind);
+          pkmnWithSpecficType.add(toExamine);
         } else {
-          if (pkmnToFind.getTypes().split(",").length < 2) {
-            pkmnWithSpecficType.add(pkmnToFind);
+          if (toExamine.getTypes().split(",").length < 2) {
+            pkmnWithSpecficType.add(toExamine);
           }
         }
       }
@@ -53,25 +57,85 @@ public class Pokedex {
     return pkmnWithSpecficType;
   }
 
-  public static ArrayList<Pokemon> filterPokemonByTotalBaseStats(
+  public static ArrayList<Pokemon> filterPokemonByMinimumTotalBaseStats(
       int minimumTotalBaseStats, Pokedex targetPokedex) {
 
     ArrayList<Pokemon> validPokemon = new ArrayList<>();
-
-    for (Pokemon pkmnToExamine : targetPokedex.listOfPokemon) {
+    for (Pokemon toExamine : targetPokedex.listOfPokemon) {
 
       int totalBaseStats = 0;
-      for (Integer statValue : pkmnToExamine.getBaseStats().values()) {
+      for (Integer statValue : toExamine.getBaseStats().values()) {
         totalBaseStats += statValue;
       }
 
-      if (totalBaseStats > minimumTotalBaseStats) {
-        validPokemon.add(pkmnToExamine);
+      if (totalBaseStats >= minimumTotalBaseStats) {
+        validPokemon.add(toExamine);
       }
     }
 
     return validPokemon;
   }
+
+  public static ArrayList<Pokemon> filterPokemonByTypeWithMove(Pokedex targetPokedex, String pokemonType, String pokemonMove) {
+    ArrayList<Pokemon> pkmnWithSpecificType = filterPokemonWithSpecificType(targetPokedex, pokemonType, false);
+    ArrayList<Pokemon> pkmnWithSpecificMove = new ArrayList<>();
+
+    for(Pokemon toExamine: pkmnWithSpecificType) {
+      if(toExamine.getPossibleMoves().contains(pokemonMove)) {
+        pkmnWithSpecificMove.add(toExamine);
+      }
+    }
+
+    return pkmnWithSpecificMove;
+  }
+
+  public static ArrayList<Pokemon> filterPokemonByMinimumumHeightandWeight(Pokedex targetPokedex, int minHeight, int minWeight) {
+
+    ArrayList<Pokemon> validPkmn = new ArrayList<>();
+
+    for(Pokemon toExamine: targetPokedex.listOfPokemon) {
+      if(toExamine.getHeight() >= minHeight && toExamine.getWeight() >= minWeight) {
+        validPkmn.add(toExamine);
+      }
+    }
+
+    return validPkmn;
+  }
+
+  public static Pokemon findPokemonByName(Pokedex targetPokeDex, String name) {
+    for(Pokemon toExamine: targetPokeDex.listOfPokemon) {
+      if(toExamine.getPkmnName().equals(name)) {
+        return toExamine;
+      }
+    }
+
+    return null;
+  }
+
+  public static ArrayList<String> filterMovesWithKeywordFromPokemon(Pokedex targetPokedex, String pokemonName, String keyword) {
+
+    Pokemon toExamine = findPokemonByName(targetPokedex, pokemonName);
+
+    if(toExamine == null) {
+      throw new NoSuchElementException("Pokemon does not exist in the pokedex");
+    }
+
+    int indexOfPokemon = targetPokedex.listOfPokemon.indexOf(toExamine);
+    keyword = keyword.toLowerCase();
+
+    ArrayList<String> possibleMoves = targetPokedex.listOfPokemon.get(indexOfPokemon).getPossibleMoves();
+    ArrayList<String> validMoves = new ArrayList<>();
+
+    for(String move: possibleMoves) {
+      if(move.contains(keyword)) {
+        validMoves.add(move);
+      }
+    }
+
+    return validMoves;
+  }
+
+  //Analysis Methods Begin Here
 
   public static int numOfPokemonWithSpecificType(
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
@@ -87,8 +151,8 @@ public class Pokedex {
         Pokedex.filterPokemonWithSpecificType(targetPokedex, pokemonType, false);
 
     double averageStatValue = 0;
-    for (Pokemon targetPokemon : pkmnWithDesiredType) {
-      averageStatValue += targetPokemon.getBaseStats().get(statName);
+    for (Pokemon toExamine : pkmnWithDesiredType) {
+      averageStatValue += toExamine.getBaseStats().get(statName);
     }
 
     return averageStatValue / pkmnWithDesiredType.size();
