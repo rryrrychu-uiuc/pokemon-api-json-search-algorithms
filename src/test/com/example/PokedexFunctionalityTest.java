@@ -1,11 +1,12 @@
 package com.example;
 
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
-import java.util.*;
+import java.util.ArrayList;
 
-
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class PokedexFunctionalityTest {
 
@@ -36,11 +37,11 @@ public class PokedexFunctionalityTest {
     };
 
     ArrayList<Pokemon> targetedPokemon =
-        original151Pokedex.filterPokemonWithSpecificType("fire", false);
+        Pokedex.filterPokemonWithSpecificType(original151Pokedex, "fire", false);
 
     ArrayList<String> actualPokemonNames = new ArrayList<>();
 
-    for(Pokemon toAdd: targetedPokemon) {
+    for (Pokemon toAdd : targetedPokemon) {
       actualPokemonNames.add(toAdd.getPkmnName());
     }
 
@@ -50,7 +51,7 @@ public class PokedexFunctionalityTest {
   @Test
   public void testCorrectNumberOfPokemon() {
     int expectedNumOfGrassTypes = 14;
-    int numOfPokemon = original151Pokedex.numOfPokemonWithSpecificType("grass", false);
+    int numOfPokemon = Pokedex.numOfPokemonWithSpecificType(original151Pokedex, "grass", false);
     assertEquals(expectedNumOfGrassTypes, numOfPokemon);
   }
 }
