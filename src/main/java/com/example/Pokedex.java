@@ -25,7 +25,7 @@ public class Pokedex {
 
     public void printAllPokemon() {
         for(Pokemon toPrint: listOfPokemon) {
-            System.out.println(toPrint.getName() + " " + toPrint.getTypes());
+            System.out.println(toPrint.getPkmnName() + " - " + toPrint.getTypes());
         }
     }
 

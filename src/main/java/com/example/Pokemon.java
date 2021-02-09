@@ -1,5 +1,6 @@
 package com.example;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,18 +10,22 @@ import java.util.ArrayList;
 
 public class Pokemon {
 
-    private String name;
-    private String url;
+    @JsonProperty("name")
+    private String pkmnName;
+
+    @JsonProperty("url")
+    private String pkmnStatsURL;
+
     private ArrayList<String> pokemonTypes;
 
     public Pokemon(){ }
 
-    public String getName() {
-        return name;
+    public String getPkmnName() {
+        return pkmnName;
     }
 
-    public String getUrl() {
-        return url;
+    public String getPkmnStatsURL() {
+        return pkmnStatsURL;
     }
 
     public String getTypes() {
@@ -28,17 +33,16 @@ public class Pokemon {
         returnedPokemonTypes.append("Types: ");
         for(String pokeType: pokemonTypes) {
             returnedPokemonTypes.append(pokeType);
-            returnedPokemonTypes.append(" ");
+            returnedPokemonTypes.append(", ");
         }
 
-        return returnedPokemonTypes.toString();
+    return returnedPokemonTypes.substring(0, returnedPokemonTypes.length()-2);
     }
 
     public void extractPokemonStatsFromUrl() {
-
         pokemonTypes = new ArrayList<>();
         try {
-            JsonNode allPokemonStats = new ObjectMapper().readValue(new URL(url), JsonNode.class);
+            JsonNode allPokemonStats = new ObjectMapper().readValue(new URL(pkmnStatsURL), JsonNode.class);
             JsonNode pkmnTypeList = allPokemonStats.get("types");
             for(JsonNode type: pkmnTypeList) {
                 JsonNode typeStats = type.get("type");
