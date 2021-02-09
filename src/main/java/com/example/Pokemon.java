@@ -1,11 +1,10 @@
 package com.example;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Pokemon {
 
@@ -33,14 +32,28 @@ public class Pokemon {
     }
 
     public String getPossibleMoves() {
-        StringBuilder pokemonMoves = new StringBuilder();
-        pokemonMoves.append("Types: ");
+        StringBuilder returnPokemonMoves = new StringBuilder();
+        returnPokemonMoves.append("Types: ");
         for (String pokeMove : pkmnStats.pokemonMoves) {
-            pokemonMoves.append(pokeMove);
-            pokemonMoves.append(", ");
+            returnPokemonMoves.append(pokeMove);
+            returnPokemonMoves.append(", ");
         }
 
-        return pokemonMoves.substring(0, pokemonMoves.length()-2);
+        return returnPokemonMoves.substring(0, returnPokemonMoves.length()-2);
+    }
+
+    public String getBaseStats() {
+        StringBuilder returnBaseStats = new StringBuilder();
+        returnBaseStats.append("Base Stats: ");
+        Set<String> statNames = pkmnStats.pokemonBaseStats.keySet();
+        for(String stat: statNames) {
+            returnBaseStats.append("\n");
+            returnBaseStats.append(stat);
+            returnBaseStats.append(": ");
+            returnBaseStats.append(pkmnStats.pokemonBaseStats.get(stat));
+        }
+
+        return returnBaseStats.toString();
     }
 
     private PokemonStats deserializePokemonStats(String pkmnStatsURL) {
@@ -51,7 +64,9 @@ public class Pokemon {
             JsonNode allPokemonStats = new ObjectMapper().readValue(new URL(pkmnStatsURL), JsonNode.class);
             newStatsToReturn.pokemonTypes = deserializePkmnTypes(allPokemonStats);
             newStatsToReturn.pokemonMoves = deserializePkmnMoves(allPokemonStats);
+            newStatsToReturn.pokemonBaseStats = deserializePkmnBaseStats(allPokemonStats);
             newStatsToReturn.weight = allPokemonStats.get("weight").asInt();
+            newStatsToReturn.height = allPokemonStats.get("height").asInt();
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid url");
         }
@@ -84,14 +99,31 @@ public class Pokemon {
         return movesToReturn;
     }
 
+    private HashMap<String, Integer> deserializePkmnBaseStats(JsonNode allPokemonStats) {
+
+        HashMap<String, Integer> movesToReturn =  new HashMap<>();
+        JsonNode baseStats = allPokemonStats.get("stats");
+
+        for(JsonNode variousStats: baseStats) {
+            int statValue = variousStats.get("base_stat").asInt();
+            String statName = variousStats.get("stat").get("name").asText();
+            movesToReturn.put(statName, statValue);
+        }
+
+        return movesToReturn;
+    }
+
     public class PokemonStats {
         public ArrayList<String> pokemonTypes;
         public ArrayList<String> pokemonMoves;
+        public HashMap<String, Integer> pokemonBaseStats;
         public int weight;
+        public int height;
 
         public PokemonStats() {
             pokemonTypes = new ArrayList<>();
             pokemonMoves = new ArrayList<>();
+            pokemonBaseStats = new HashMap<>();
         }
     }
 }

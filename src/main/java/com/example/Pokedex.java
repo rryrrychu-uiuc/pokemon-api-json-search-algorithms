@@ -16,8 +16,8 @@ public class Pokedex {
     public Pokedex(String path){
 
         File file = new File(path);
+        listOfPokemon = new ArrayList<>();
         try {
-            listOfPokemon = new ArrayList<>();
             JsonNode allPokemon = new ObjectMapper().readValue(file, JsonNode.class);
             for(JsonNode pokemon: allPokemon) {
                 JsonNode pokemonName = pokemon.get("name");
@@ -25,16 +25,14 @@ public class Pokedex {
                 Pokemon newPokemon = new Pokemon(pokemonName.asText(), statsURL.asText());
                 listOfPokemon.add(newPokemon);
             }
-
         } catch(IOException e) {
             throw new IllegalArgumentException("Invalid path");
         }
-
     }
 
     public void printAllPokemon() {
         for(Pokemon toPrint: listOfPokemon) {
-            System.out.println(toPrint.getPkmnName() + " - " + toPrint.getTypes());
+            System.out.println(toPrint.getPkmnName() + "\n" + toPrint.getBaseStats() + "\n");
         }
     }
 
