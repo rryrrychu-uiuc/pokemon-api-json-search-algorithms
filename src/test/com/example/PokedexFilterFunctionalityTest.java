@@ -58,15 +58,10 @@ public class PokedexFilterFunctionalityTest {
       "moltres"
     };
 
-    ArrayList<Pokemon> targetedPokemon =
+    Pokedex targetedPokemon =
         Pokedex.filterPokemonByType(original151Pokedex, "fire", false);
 
-    ArrayList<String> actualPokemonNames = new ArrayList<>();
-
-    for (Pokemon toAdd : targetedPokemon) {
-      actualPokemonNames.add(toAdd.getPkmnName());
-    }
-
+    ArrayList<String> actualPokemonNames = Pokedex.getALlPokemonNames(targetedPokemon);
     assertArrayEquals(expectedPokemonNames, actualPokemonNames.toArray());
   }
 
@@ -74,15 +69,10 @@ public class PokedexFilterFunctionalityTest {
   public void testWithPurePokemonType() {
     String[] expectedPokemonNames = {"tangela"};
 
-    ArrayList<Pokemon> targetedPokemon =
+    Pokedex targetedPokemon =
             Pokedex.filterPokemonByType(original151Pokedex, "grass", true);
 
-    ArrayList<String> actualPokemonNames = new ArrayList<>();
-
-    for (Pokemon toAdd : targetedPokemon) {
-      actualPokemonNames.add(toAdd.getPkmnName());
-    }
-
+    ArrayList<String> actualPokemonNames = Pokedex.getALlPokemonNames(targetedPokemon);
     assertArrayEquals(expectedPokemonNames, actualPokemonNames.toArray());
   }
 

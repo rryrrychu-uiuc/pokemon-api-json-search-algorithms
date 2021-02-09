@@ -32,6 +32,10 @@ public class Pokedex {
     addPokemonTypesFromJson();
   }
 
+  public Pokedex() {
+    listOfPokemon = new ArrayList<>();
+  }
+
   public void addPokemonTypesFromJson() {
 
     File file = new File("src/main/resources/pokemontypes.json");
@@ -46,18 +50,29 @@ public class Pokedex {
     }
   }
 
-  public static void printAllPokemon(Pokedex targetPokedex) {
+  public void addPokemon(Pokemon toAdd) {
+    listOfPokemon.add(toAdd);
+  }
+
+  public int pokedexSize() {
+    return listOfPokemon.size();
+  }
+
+  public static ArrayList<String> getALlPokemonNames(Pokedex targetPokedex) {
 
     checkIfPokedexIsNull(targetPokedex);
 
-    for (Pokemon toPrint : targetPokedex.listOfPokemon) {
-      System.out.println(toPrint.getPkmnName());
+    ArrayList<String> pokemonNames = new ArrayList<>();
+    for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
+      pokemonNames.add(targetPokemon.getPkmnName());
     }
+
+    return pokemonNames;
   }
 
   // Filtering Methods Begin Here
 
-  public static ArrayList<Pokemon> filterPokemonByType(
+  public static Pokedex filterPokemonByType(
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -67,15 +82,15 @@ public class Pokedex {
     pokemonType = pokemonType.toLowerCase();
     checkValidPokemonType(pokemonType);
 
-    ArrayList<Pokemon> pkmnWithSpecificType = new ArrayList<>();
+    Pokedex pkmnWithSpecificType = new Pokedex();
     for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
 
       if (targetPokemon.getTypes().contains(pokemonType)) {
         if (!isPureTypeSearch) {
-          pkmnWithSpecificType.add(targetPokemon);
+          pkmnWithSpecificType.addPokemon(targetPokemon);
         } else {
           if (targetPokemon.getTypes().size() < 2) {
-            pkmnWithSpecificType.add(targetPokemon);
+            pkmnWithSpecificType.addPokemon(targetPokemon);
           }
         }
       }
@@ -84,7 +99,7 @@ public class Pokedex {
     return pkmnWithSpecificType;
   }
 
-  public static ArrayList<Pokemon> filterPokemonByMinTotalBaseStats(
+  public static Pokedex filterPokemonByMinTotalBaseStats(
       Pokedex targetPokedex, int minimumTotalBaseStats) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -93,7 +108,7 @@ public class Pokedex {
       throw new IllegalArgumentException("Total base stats cannot be negative");
     }
 
-    ArrayList<Pokemon> validPokemon = new ArrayList<>();
+    Pokedex validPokemon = new Pokedex();
     for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
 
       int totalBaseStats = 0;
@@ -102,14 +117,14 @@ public class Pokedex {
       }
 
       if (totalBaseStats >= minimumTotalBaseStats) {
-        validPokemon.add(targetPokemon);
+        validPokemon.addPokemon(targetPokemon);
       }
     }
 
     return validPokemon;
   }
 
-  public static ArrayList<Pokemon> filterPokemonByTypeWithMove(
+  public static Pokedex filterPokemonByTypeWithMove(
       Pokedex targetPokedex, String pokemonType, String pokemonMove) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -125,21 +140,21 @@ public class Pokedex {
     pokemonType = pokemonType.toLowerCase();
     checkValidPokemonType(pokemonType);
 
-    ArrayList<Pokemon> pkmnWithSpecificType =
+    Pokedex pkmnWithSpecificType =
         filterPokemonByType(targetPokedex, pokemonType, false);
-    ArrayList<Pokemon> pkmnWithSpecificMove = new ArrayList<>();
+    Pokedex pkmnWithSpecificMove = new Pokedex();
 
     pokemonMove = pokemonMove.toLowerCase();
-    for (Pokemon targetPokemon : pkmnWithSpecificType) {
+    for (Pokemon targetPokemon : pkmnWithSpecificType.listOfPokemon) {
       if (targetPokemon.getPossibleMoves().contains(pokemonMove)) {
-        pkmnWithSpecificMove.add(targetPokemon);
+        pkmnWithSpecificMove.addPokemon(targetPokemon);
       }
     }
 
     return pkmnWithSpecificMove;
   }
 
-  public static ArrayList<Pokemon> filterPokemonByMinimumumHeightandWeight(
+  public static Pokedex filterPokemonByMinimumumHeightAndWeight(
       Pokedex targetPokedex, int minHeight, int minWeight) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -148,10 +163,10 @@ public class Pokedex {
       throw new IllegalArgumentException("Minimum height and weight cannot be negative");
     }
 
-    ArrayList<Pokemon> validPkmn = new ArrayList<>();
+    Pokedex validPkmn = new Pokedex();
     for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
       if (targetPokemon.getHeight() >= minHeight && targetPokemon.getWeight() >= minWeight) {
-        validPkmn.add(targetPokemon);
+        validPkmn.addPokemon(targetPokemon);
       }
     }
 
@@ -204,21 +219,21 @@ public class Pokedex {
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
 
     return Pokedex.filterPokemonByType(targetPokedex, pokemonType, isPureTypeSearch)
-        .size();
+        .pokedexSize();
   }
 
   public static Double averageBaseStatValueOfSpecificType(
       Pokedex targetPokedex, String statName, String pokemonType) {
 
-    ArrayList<Pokemon> pkmnWithDesiredType =
+    Pokedex pkmnWithDesiredType =
         Pokedex.filterPokemonByType(targetPokedex, pokemonType, false);
 
     double averageStatValue = 0;
-    for (Pokemon targetPokemon : pkmnWithDesiredType) {
+    for (Pokemon targetPokemon : pkmnWithDesiredType.listOfPokemon) {
       averageStatValue += targetPokemon.getBaseStats().get(statName);
     }
 
-    return averageStatValue / pkmnWithDesiredType.size();
+    return averageStatValue / pkmnWithDesiredType.pokedexSize();
   }
 
   //Exception Checking Methods Begin Here
