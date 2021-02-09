@@ -8,22 +8,22 @@ import java.util.*;
 
 public class Pokemon {
 
-    private String pkmnName;
-    private PokemonStats pkmnStats;
+    private String pokemonName;
+    private PokemonStats specificStats;
 
     public Pokemon(String name, String statsURL){
-        pkmnName = name;
-        pkmnStats = deserializePokemonStats(statsURL);
+        pokemonName = name;
+        specificStats = deserializePokemonStats(statsURL);
     }
 
     public String getPkmnName() {
-        return pkmnName;
+        return pokemonName;
     }
 
     public String getTypes() {
         StringBuilder returnedPokemonTypes = new StringBuilder();
         returnedPokemonTypes.append("Types: ");
-        for (String pokeType : pkmnStats.pokemonTypes) {
+        for (String pokeType : specificStats.pokemonTypes) {
             returnedPokemonTypes.append(pokeType);
             returnedPokemonTypes.append(", ");
         }
@@ -31,29 +31,14 @@ public class Pokemon {
         return returnedPokemonTypes.substring(0, returnedPokemonTypes.length()-2);
     }
 
-    public String getPossibleMoves() {
-        StringBuilder returnPokemonMoves = new StringBuilder();
-        returnPokemonMoves.append("Types: ");
-        for (String pokeMove : pkmnStats.pokemonMoves) {
-            returnPokemonMoves.append(pokeMove);
-            returnPokemonMoves.append(", ");
-        }
+    public ArrayList<String> getPossibleMoves() {
 
-        return returnPokemonMoves.substring(0, returnPokemonMoves.length()-2);
+        return specificStats.pokemonMoves;
     }
 
-    public String getBaseStats() {
-        StringBuilder returnBaseStats = new StringBuilder();
-        returnBaseStats.append("Base Stats: ");
-        Set<String> statNames = pkmnStats.pokemonBaseStats.keySet();
-        for(String stat: statNames) {
-            returnBaseStats.append("\n");
-            returnBaseStats.append(stat);
-            returnBaseStats.append(": ");
-            returnBaseStats.append(pkmnStats.pokemonBaseStats.get(stat));
-        }
+    public Map<String, Integer> getBaseStats() {
 
-        return returnBaseStats.toString();
+        return specificStats.pokemonBaseStats;
     }
 
     private PokemonStats deserializePokemonStats(String pkmnStatsURL) {
