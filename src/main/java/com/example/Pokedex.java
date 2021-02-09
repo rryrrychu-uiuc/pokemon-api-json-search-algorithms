@@ -1,10 +1,12 @@
 package com.example;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Pokedex {
@@ -15,12 +17,19 @@ public class Pokedex {
 
         File file = new File(path);
         try {
-            listOfPokemon = new ObjectMapper().readValue(file, new TypeReference<ArrayList<Pokemon>>(){});
+            listOfPokemon = new ArrayList<>();
+            JsonNode allPokemon = new ObjectMapper().readValue(file, JsonNode.class);
+            for(JsonNode pokemon: allPokemon) {
+                JsonNode pokemonName = pokemon.get("name");
+                JsonNode statsURL = pokemon.get("url");
+                Pokemon newPokemon = new Pokemon(pokemonName.asText(), statsURL.asText());
+                listOfPokemon.add(newPokemon);
+            }
+
         } catch(IOException e) {
             throw new IllegalArgumentException("Invalid path");
         }
 
-        initializePokemonStats();
     }
 
     public void printAllPokemon() {
@@ -29,9 +38,4 @@ public class Pokedex {
         }
     }
 
-    private void initializePokemonStats() {
-        for(Pokemon toInitialize: listOfPokemon) {
-            toInitialize.extractPokemonStatsFromUrl();
-        }
-    }
 }
