@@ -32,6 +32,20 @@ public class Pokedex {
     addPokemonTypesFromJson();
   }
 
+  public void addPokemonTypesFromJson() {
+
+    File file = new File("src/main/resources/pokemontypes.json");
+    pokemonTypes = new ArrayList<>();
+    try {
+      JsonNode allTypes = new ObjectMapper().readValue(file, JsonNode.class).get("results");
+      for (JsonNode typeStats : allTypes) {
+        pokemonTypes.add(typeStats.get("name").asText());
+      }
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Invalid path for pokemon types");
+    }
+  }
+
   public static void printAllPokemon(Pokedex targetPokedex) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -41,7 +55,9 @@ public class Pokedex {
     }
   }
 
-  public static ArrayList<Pokemon> filterPokemonWithSpecificType(
+  // Filtering Methods Begin Here
+
+  public static ArrayList<Pokemon> filterPokemonByType(
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -68,9 +84,7 @@ public class Pokedex {
     return pkmnWithSpecificType;
   }
 
-  // Filtering Methods Begin Here
-
-  public static ArrayList<Pokemon> filterPokemonByMinimumTotalBaseStats(
+  public static ArrayList<Pokemon> filterPokemonByMinTotalBaseStats(
       Pokedex targetPokedex, int minimumTotalBaseStats) {
 
     checkIfPokedexIsNull(targetPokedex);
@@ -112,7 +126,7 @@ public class Pokedex {
     checkValidPokemonType(pokemonType);
 
     ArrayList<Pokemon> pkmnWithSpecificType =
-        filterPokemonWithSpecificType(targetPokedex, pokemonType, false);
+        filterPokemonByType(targetPokedex, pokemonType, false);
     ArrayList<Pokemon> pkmnWithSpecificMove = new ArrayList<>();
 
     pokemonMove = pokemonMove.toLowerCase();
@@ -144,24 +158,6 @@ public class Pokedex {
     return validPkmn;
   }
 
-  public static Pokemon findPokemonByName(Pokedex targetPokedex, String pokemonName) {
-
-    checkIfPokedexIsNull(targetPokedex);
-
-    if (pokemonName == null || pokemonName.length() == 0) {
-      throw new IllegalArgumentException("Pokemon name cannot be null or empty");
-    }
-
-    pokemonName = pokemonName.toLowerCase();
-    for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
-      if (targetPokemon.getPkmnName().equals(pokemonName)) {
-        return targetPokemon;
-      }
-    }
-
-    return null;
-  }
-
   public static ArrayList<String> filterMovesWithKeywordFromPokemon(
       Pokedex targetPokedex, String pokemonName, String keyword) {
 
@@ -184,12 +180,30 @@ public class Pokedex {
     return validMoves;
   }
 
+  private static Pokemon findPokemonByName(Pokedex targetPokedex, String pokemonName) {
+
+    checkIfPokedexIsNull(targetPokedex);
+
+    if (pokemonName == null || pokemonName.length() == 0) {
+      throw new IllegalArgumentException("Pokemon name cannot be null or empty");
+    }
+
+    pokemonName = pokemonName.toLowerCase();
+    for (Pokemon targetPokemon : targetPokedex.listOfPokemon) {
+      if (targetPokemon.getPkmnName().equals(pokemonName)) {
+        return targetPokemon;
+      }
+    }
+
+    return null;
+  }
+
   // Analysis Methods Begin Here
 
   public static int numOfPokemonWithSpecificType(
       Pokedex targetPokedex, String pokemonType, boolean isPureTypeSearch) {
 
-    return Pokedex.filterPokemonWithSpecificType(targetPokedex, pokemonType, isPureTypeSearch)
+    return Pokedex.filterPokemonByType(targetPokedex, pokemonType, isPureTypeSearch)
         .size();
   }
 
@@ -197,7 +211,7 @@ public class Pokedex {
       Pokedex targetPokedex, String statName, String pokemonType) {
 
     ArrayList<Pokemon> pkmnWithDesiredType =
-        Pokedex.filterPokemonWithSpecificType(targetPokedex, pokemonType, false);
+        Pokedex.filterPokemonByType(targetPokedex, pokemonType, false);
 
     double averageStatValue = 0;
     for (Pokemon targetPokemon : pkmnWithDesiredType) {
@@ -206,6 +220,8 @@ public class Pokedex {
 
     return averageStatValue / pkmnWithDesiredType.size();
   }
+
+  //Exception Checking Methods Begin Here
 
   private static void checkIfPokedexIsNull(Pokedex targetPokedex) {
     if (targetPokedex == null) {
@@ -216,20 +232,6 @@ public class Pokedex {
   private static void checkValidPokemonType(String pokemonType) {
     if (!pokemonTypes.contains(pokemonType)) {
       throw new IllegalArgumentException("Passed pokemon type does not exist");
-    }
-  }
-
-  public void addPokemonTypesFromJson() {
-
-    File file = new File("src/main/resources/pokemontypes.json");
-    pokemonTypes = new ArrayList<>();
-    try {
-      JsonNode allTypes = new ObjectMapper().readValue(file, JsonNode.class).get("results");
-      for (JsonNode typeStats : allTypes) {
-        pokemonTypes.add(typeStats.get("name").asText());
-      }
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Invalid path for pokemon types");
     }
   }
 }
