@@ -12,7 +12,7 @@ public class PokedexAnalysisFunctionalityTest {
     @BeforeClass
     public static void setUp() {
 
-        original151Pokedex = new Pokedex("src/main/resources/original151pokemon.json");
+        original151Pokedex = new Pokedex("original151pokemon.json");
     }
 
     @Test

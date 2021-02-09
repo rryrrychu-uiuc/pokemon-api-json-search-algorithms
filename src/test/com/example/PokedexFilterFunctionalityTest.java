@@ -16,7 +16,7 @@ public class PokedexFilterFunctionalityTest {
   @BeforeClass
   public static void setUp() {
 
-    original151Dex = new Pokedex("src/main/resources/original151pokemon.json");
+    original151Dex = new Pokedex("original151pokemon.json");
   }
 
   // Test cases for filterPokemonByType
