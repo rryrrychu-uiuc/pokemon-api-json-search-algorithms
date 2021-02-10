@@ -249,7 +249,7 @@ public class Pokedex {
   }
 
   public static Double averageBaseStatValueOfSpecificType(
-      Pokedex targetPokedex, String statName, String pokemonType) {
+          Pokedex targetPokedex, String pokemonType, String statName) {
 
     checkValidPokemonStat(statName);
 
@@ -329,6 +329,7 @@ public class Pokedex {
     if (statName == null || statName.length() == 0) {
       throw new IllegalArgumentException("Pokemon stat cannot be null or empty");
     }
+
     if (!pokemonStatNames.contains(statName.toLowerCase())) {
       throw new NoSuchElementException("Pokemon stat does not exist");
     }
