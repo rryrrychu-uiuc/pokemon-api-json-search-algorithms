@@ -37,7 +37,7 @@ public class PokedexFilterFunctionalityTest {
   }
 
   @Test(expected = NoSuchElementException.class)
-  public void testTypeFilterWithTypeDNE() {
+  public void testTypeFilterWhenTypeDNE() {
     Pokedex.filterPokemonByType(original151Dex, "cats", false);
   }
 
@@ -71,6 +71,36 @@ public class PokedexFilterFunctionalityTest {
     assertArrayEquals(expectedPokemonNames, Pokedex.getPokemonNames(actualPokemon).toArray());
   }
 
+  // Test cases for filterPokemonByMove
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveFilterWithNullPokedex() {
+    Pokedex.filterPokemonByMove(null, "transform");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveFilterWithNullMove() {
+    Pokedex.filterPokemonByMove(original151Dex, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveFilterWithEmptyMove() {
+    Pokedex.filterPokemonByMove(original151Dex, "");
+  }
+
+  @Test
+  public void testMoveFilterWithMoveDNE() {
+    assertEquals(0, Pokedex.filterPokemonByMove(original151Dex, "cats").pokedexSize());
+  }
+
+  @Test
+  public void testValidMoveFilter() {
+    String[] expectedPokemon = {"ditto", "mew"};
+    Pokedex actualPokemon = Pokedex.filterPokemonByMove(original151Dex, "transform");
+
+    assertArrayEquals(expectedPokemon, Pokedex.getPokemonNames(actualPokemon).toArray());
+  }
+
   // Test cases for filterPokemonByMinTotalBaseStats
 
   @Test(expected = IllegalArgumentException.class)
@@ -94,42 +124,42 @@ public class PokedexFilterFunctionalityTest {
     assertArrayEquals(expectedPokemonNames, Pokedex.getPokemonNames(actualPokemon).toArray());
   }
 
-  // Test cases for filterPokemonByTypeWithMove
+  // Test cases for filterPokemonByTypeAndMove
 
   @Test(expected = IllegalArgumentException.class)
   public void testMoveTypeFilterWithNullPokedex() {
-    Pokedex.filterPokemonByTypeWithMove(null, "grass", "water-gun");
+    Pokedex.filterPokemonByTypeAndMove(null, "grass", "water-gun");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMoveTypeFilterWithNullType() {
-    Pokedex.filterPokemonByTypeWithMove(original151Dex, null, "water-gun");
+    Pokedex.filterPokemonByTypeAndMove(original151Dex, null, "water-gun");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMoveTypeFilterWithEmptyType() {
-    Pokedex.filterPokemonByTypeWithMove(original151Dex, "", "water-gun");
+    Pokedex.filterPokemonByTypeAndMove(original151Dex, "", "water-gun");
   }
 
   @Test(expected = NoSuchElementException.class)
-  public void testMoveTypeFilterWithTypeDNE() {
-    Pokedex.filterPokemonByTypeWithMove(original151Dex, "cat", "water-gun");
+  public void testMoveTypeFilterWhenTypeDNE() {
+    Pokedex.filterPokemonByTypeAndMove(original151Dex, "cat", "water-gun");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMoveTypeFilterWithNullMove() {
-    Pokedex.filterPokemonByTypeWithMove(original151Dex, "grass", null);
+    Pokedex.filterPokemonByTypeAndMove(original151Dex, "grass", null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testMoveTypeFilterWithEmptyMove() {
-    Pokedex.filterPokemonByTypeWithMove(original151Dex, "grass", "");
+    Pokedex.filterPokemonByTypeAndMove(original151Dex, "grass", "");
   }
 
   @Test
-  public void testMoveTypeFilterWithMoveDNE() {
+  public void testMoveTypeFilterWhenMoveDNE() {
     int numMoves =
-        Pokedex.filterPokemonByTypeWithMove(original151Dex, "grass", "cats").pokedexSize();
+        Pokedex.filterPokemonByTypeAndMove(original151Dex, "grass", "cats").pokedexSize();
 
     assertEquals(0, numMoves);
   }
@@ -141,7 +171,7 @@ public class PokedexFilterFunctionalityTest {
     };
 
     Pokedex actualPokemon =
-        Pokedex.filterPokemonByTypeWithMove(original151Dex, "grass", "hyper-beam");
+        Pokedex.filterPokemonByTypeAndMove(original151Dex, "grass", "hyper-beam");
 
     assertArrayEquals(expectedPokemonNames, Pokedex.getPokemonNames(actualPokemon).toArray());
   }
@@ -174,37 +204,37 @@ public class PokedexFilterFunctionalityTest {
   // Test cases for filterPokemonMovesWithKeyword
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFilterWithNullPokedex() {
+  public void testKeywordFilterWithNullPokedex() {
     Pokedex.filterPokemonMovesWithKeyword(null, "geodude", "rock");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFilterWithNullName() {
+  public void testKeywordFilterWithNullName() {
     Pokedex.filterPokemonMovesWithKeyword(original151Dex, null, "rock");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFilterWithEmptyName() {
+  public void testKeywordFilterWithEmptyName() {
     Pokedex.filterPokemonMovesWithKeyword(original151Dex, "", "rock");
   }
 
   @Test(expected = NoSuchElementException.class)
-  public void testMoveFilterWithNameDNE() {
+  public void testKeywordFilterWhenNameDNE() {
     Pokedex.filterPokemonMovesWithKeyword(original151Dex, "cat", "rock");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFilterWithNullKeyword() {
+  public void testKeywordFilterWithNullKeyword() {
     Pokedex.filterPokemonMovesWithKeyword(original151Dex, "geodude", null);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFilterWithEmptyMove() {
+  public void testKeywordFilterWithEmptyMove() {
     Pokedex.filterPokemonMovesWithKeyword(original151Dex, "geodude", "");
   }
 
   @Test
-  public void testMoveFilterWithKeywordDNE() {
+  public void testMoveFilterWhenKeywordDNE() {
     String[] expectedMoves = new String[0];
     ArrayList<String> actualMoves =
         Pokedex.filterPokemonMovesWithKeyword(original151Dex, "geodude", "cat");
@@ -213,7 +243,7 @@ public class PokedexFilterFunctionalityTest {
   }
 
   @Test
-  public void testValidMoveFilter() {
+  public void testValidKeywordFilter() {
     String[] expectedMoves = {
       "rock-throw",
       "rock-slide",
