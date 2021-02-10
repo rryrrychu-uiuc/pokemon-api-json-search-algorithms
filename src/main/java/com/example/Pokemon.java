@@ -8,15 +8,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Pokemon stores information about a single pokemon and extracts data from the PokeAPI given a URL
+ *
+ * @author Harry Chu
+ */
 public class Pokemon {
 
-  private String pokemonName;
-  private PokemonStats specificStats;
+  private final String pokemonName;
+  private final PokemonStats specificStats;
 
   public Pokemon(String name, String statsURL) {
     pokemonName = name;
     specificStats = deserializePokemonStats(statsURL);
+  }
+
+  public Pokemon() {
+    pokemonName = "";
+    specificStats = new PokemonStats();
   }
 
   public String getPkmnName() {
@@ -50,6 +59,7 @@ public class Pokemon {
 
     PokemonStats newStatsToReturn = new PokemonStats();
 
+    // based on the format of the JSON,
     try {
       JsonNode allPokemonStats =
           new ObjectMapper().readValue(new URL(pkmnStatsURL), JsonNode.class);
@@ -104,6 +114,7 @@ public class Pokemon {
     return movesToReturn;
   }
 
+  /** PokemonStats stores specific details a single pokemon */
   public class PokemonStats {
     public ArrayList<String> pokemonTypes;
     public ArrayList<String> pokemonMoves;
